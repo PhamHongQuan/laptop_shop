@@ -1,0 +1,115 @@
+# Project Architecture
+
+## Architecture Pattern
+
+Controller
+
+↓
+
+Service
+
+↓
+
+Repository
+
+↓
+
+Model
+
+↓
+
+Database
+
+---
+
+## Folder Structure
+
+app/
+
+Controllers/
+
+Services/
+
+Repositories/
+
+Interfaces/
+
+Models/
+
+DTO/
+
+Enums/
+
+Traits/
+
+Jobs/
+
+Events/
+
+Listeners/
+
+Policies/
+
+Resources/
+
+Requests/
+
+---
+
+## Design Pattern
+
+- Repository Pattern
+- Service Layer
+- Dependency Injection
+- SOLID
+- RESTful API
+
+---
+
+## Flow
+
+Browser
+
+↓
+
+Route
+
+↓
+
+Middleware
+
+↓
+
+Controller
+
+↓
+
+Request Validation
+
+↓
+
+DTO
+
+↓
+
+Service
+
+↓
+
+Repository
+
+↓
+
+Model
+
+↓
+
+Database
+
+↓
+
+API Resource
+
+↓
+
+Response

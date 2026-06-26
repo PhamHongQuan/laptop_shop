@@ -1,0 +1,89 @@
+# Laptop Shop - Requirement
+
+## 1. Project Overview
+
+Xây dựng website bán laptop theo mô hình E-commerce.
+
+Tech Stack
+
+- Laravel 12
+- PHP 8.4
+- MySQL 8
+- Docker
+- Redis
+- React
+- TailwindCSS
+
+---
+
+## 2. Actors
+
+### Admin
+
+- Login
+- Dashboard
+- Quản lý Brand
+- Quản lý Category
+- Quản lý Product
+- Quản lý Product Image
+- Quản lý Product Specification
+- Quản lý User
+- Quản lý Order
+
+### Customer
+
+- Register
+- Login
+- Logout
+- Forgot Password
+- Xem danh sách laptop
+- Xem chi tiết laptop
+- Tìm kiếm
+- Lọc sản phẩm
+- Thêm vào giỏ hàng
+- Đặt hàng
+- Theo dõi đơn hàng
+
+---
+
+## 3. Functional Requirements
+
+### Authentication
+
+- Register
+- Login
+- Logout
+- Forgot Password
+
+### Product
+
+- CRUD Product
+- Search
+- Filter
+- Sort
+- Pagination
+
+### Cart
+
+- Add Cart
+- Update Quantity
+- Remove Product
+
+### Order
+
+- Checkout
+- Cancel Order
+- Order History
+
+---
+
+## 4. Non-functional Requirements
+
+- RESTful API
+- JWT/Sanctum Authentication
+- Docker Ready
+- Responsive
+- Cache Redis
+- Queue Mail
+- Logging
+- Validation
