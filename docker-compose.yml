@@ -1,5 +1,3 @@
-version: "3.9"
-
 services:
 
   nginx:
@@ -24,6 +22,11 @@ services:
     container_name: laptop-php
 
     working_dir: /var/www/html
+
+    command: >
+      sh -lc "mkdir -p storage/framework/cache storage/framework/sessions storage/framework/views storage/logs bootstrap/cache
+      && chmod -R 777 storage bootstrap/cache
+      && php-fpm -F"
 
     volumes:
       - ./src:/var/www/html
