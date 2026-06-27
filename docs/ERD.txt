@@ -1,4 +1,4 @@
-# ERD - Laptop Shop
+# ERD - Laptop Shop (MVP v1.0)
 
 ## Database Information
 
@@ -12,18 +12,39 @@ Collation: utf8mb4_unicode_ci
 
 ---
 
+# Design Philosophy
+
+Đây là phiên bản **MVP (Minimum Viable Product)**.
+
+Mục tiêu:
+
+* Database đơn giản.
+* Dễ học Laravel.
+* Dễ CRUD.
+* Dễ mở rộng về sau.
+
+Các bảng như:
+
+* brands
+* product_specs
+* coupons
+* reviews
+* wishlist
+* payments
+
+sẽ được bổ sung ở các phase sau.
+
+---
+
 # Tables
 
 | Table          |
 | -------------- |
 | users          |
-| brands         |
 | categories     |
 | products       |
 | product_images |
-| product_specs  |
 | carts          |
-| cart_items     |
 | orders         |
 | order_items    |
 
@@ -31,115 +52,81 @@ Collation: utf8mb4_unicode_ci
 
 # users
 
-| Column         | Type            | Null | Default        | Description                |
-| -------------- | --------------- | ---- | -------------- | -------------------------- |
-| id             | BIGINT UNSIGNED | NO   | AUTO_INCREMENT | Primary Key                |
-| name           | VARCHAR(100)    | NO   | -              | Full Name                  |
-| email          | VARCHAR(100)    | NO   | UNIQUE         | Email                      |
-| password       | VARCHAR(255)    | NO   | -              | Password Hash              |
-| phone          | VARCHAR(20)     | YES  | NULL           | Phone Number               |
-| avatar         | VARCHAR(255)    | YES  | NULL           | Avatar URL                 |
-| role           | TINYINT         | NO   | 0              | 0=Customer,1=Admin,2=Staff |
-| status         | TINYINT         | NO   | 1              | 1=Active                   |
-| remember_token | VARCHAR(100)    | YES  | NULL           | Remember Token             |
-| created_at     | TIMESTAMP       | YES  | NULL           | Created Time               |
-| updated_at     | TIMESTAMP       | YES  | NULL           | Updated Time               |
-| deleted_at     | TIMESTAMP       | YES  | NULL           | Soft Delete                |
+| Column     | Type         | Description        |
+| ---------- | ------------ | ------------------ |
+| id         | BIGINT       | Primary Key        |
+| name       | VARCHAR(100) | Full Name          |
+| email      | VARCHAR(100) | Unique Email       |
+| password   | VARCHAR(255) | Password Hash      |
+| phone      | VARCHAR(20)  | Phone              |
+| role       | TINYINT      | 0=Customer,1=Admin |
+| created_at | TIMESTAMP    | Created Time       |
+| updated_at | TIMESTAMP    | Updated Time       |
 
 Indexes
 
 * PK(id)
 * UNIQUE(email)
-* INDEX(role)
-* INDEX(status)
-
----
-
-# brands
-
-| Column      | Type            | Null | Default        | Description |
-| ----------- | --------------- | ---- | -------------- | ----------- |
-| id          | BIGINT UNSIGNED | NO   | AUTO_INCREMENT | Primary Key |
-| name        | VARCHAR(100)    | NO   | -              | Brand Name  |
-| slug        | VARCHAR(120)    | NO   | UNIQUE         | URL Slug    |
-| logo        | VARCHAR(255)    | YES  | NULL           | Logo        |
-| description | TEXT            | YES  | NULL           | Description |
-| status      | TINYINT         | NO   | 1              | Active      |
-| created_at  | TIMESTAMP       | YES  | NULL           | Created     |
-| updated_at  | TIMESTAMP       | YES  | NULL           | Updated     |
-
-Indexes
-
-* PK(id)
-* UNIQUE(slug)
-* INDEX(status)
 
 ---
 
 # categories
 
-| Column      | Type            | Null | Default        | Description     |
-| ----------- | --------------- | ---- | -------------- | --------------- |
-| id          | BIGINT UNSIGNED | NO   | AUTO_INCREMENT | Primary Key     |
-| parent_id   | BIGINT UNSIGNED | YES  | NULL           | Parent Category |
-| name        | VARCHAR(100)    | NO   | -              | Category Name   |
-| slug        | VARCHAR(120)    | NO   | UNIQUE         | URL Slug        |
-| image       | VARCHAR(255)    | YES  | NULL           | Thumbnail       |
-| description | TEXT            | YES  | NULL           | Description     |
-| status      | TINYINT         | NO   | 1              | Active          |
-| created_at  | TIMESTAMP       | YES  | NULL           | Created         |
-| updated_at  | TIMESTAMP       | YES  | NULL           | Updated         |
+| Column     | Type         | Description   |
+| ---------- | ------------ | ------------- |
+| id         | BIGINT       | Primary Key   |
+| name       | VARCHAR(100) | Category Name |
+| slug       | VARCHAR(120) | URL Slug      |
+| created_at | TIMESTAMP    | Created Time  |
+| updated_at | TIMESTAMP    | Updated Time  |
 
 Indexes
 
 * PK(id)
-* INDEX(parent_id)
 * UNIQUE(slug)
 
 ---
 
 # products
 
-| Column            | Type            | Null | Default        | Description       |
-| ----------------- | --------------- | ---- | -------------- | ----------------- |
-| id                | BIGINT UNSIGNED | NO   | AUTO_INCREMENT | Primary Key       |
-| brand_id          | BIGINT UNSIGNED | NO   | -              | Brand ID          |
-| category_id       | BIGINT UNSIGNED | NO   | -              | Category ID       |
-| name              | VARCHAR(255)    | NO   | -              | Product Name      |
-| slug              | VARCHAR(255)    | NO   | UNIQUE         | URL Slug          |
-| sku               | VARCHAR(50)     | NO   | UNIQUE         | SKU               |
-| thumbnail         | VARCHAR(255)    | YES  | NULL           | Thumbnail         |
-| short_description | VARCHAR(500)    | YES  | NULL           | Short Description |
-| description       | LONGTEXT        | YES  | NULL           | Detail            |
-| price             | DECIMAL(15,2)   | NO   | 0              | Price             |
-| sale_price        | DECIMAL(15,2)   | YES  | NULL           | Sale Price        |
-| stock             | INT             | NO   | 0              | Stock             |
-| view_count        | INT             | NO   | 0              | Total Views       |
-| status            | TINYINT         | NO   | 1              | Active            |
-| created_at        | TIMESTAMP       | YES  | NULL           | Created           |
-| updated_at        | TIMESTAMP       | YES  | NULL           | Updated           |
-| deleted_at        | TIMESTAMP       | YES  | NULL           | Soft Delete       |
+Thông số laptop được lưu trực tiếp trong bảng để đơn giản hóa hệ thống.
+
+| Column      | Type          | Description   |
+| ----------- | ------------- | ------------- |
+| id          | BIGINT        | Primary Key   |
+| category_id | BIGINT        | Category ID   |
+| name        | VARCHAR(255)  | Product Name  |
+| slug        | VARCHAR(255)  | URL Slug      |
+| thumbnail   | VARCHAR(255)  | Thumbnail     |
+| description | TEXT          | Description   |
+| price       | DECIMAL(15,2) | Selling Price |
+| stock       | INT           | Inventory     |
+| cpu         | VARCHAR(100)  | CPU           |
+| gpu         | VARCHAR(100)  | GPU           |
+| ram         | VARCHAR(50)   | RAM           |
+| storage     | VARCHAR(50)   | SSD/HDD       |
+| screen      | VARCHAR(100)  | Screen        |
+| created_at  | TIMESTAMP     | Created       |
+| updated_at  | TIMESTAMP     | Updated       |
 
 Indexes
 
 * PK(id)
-* UNIQUE(slug)
-* UNIQUE(sku)
-* INDEX(brand_id)
 * INDEX(category_id)
-* INDEX(status)
+* UNIQUE(slug)
 
 ---
 
 # product_images
 
-| Column     | Type            | Null | Default        | Description   |
-| ---------- | --------------- | ---- | -------------- | ------------- |
-| id         | BIGINT UNSIGNED | NO   | AUTO_INCREMENT | Primary Key   |
-| product_id | BIGINT UNSIGNED | NO   | -              | Product ID    |
-| image      | VARCHAR(255)    | NO   | -              | Image URL     |
-| sort_order | INT             | NO   | 0              | Display Order |
-| created_at | TIMESTAMP       | YES  | NULL           | Created       |
+Một sản phẩm có nhiều hình ảnh.
+
+| Column     | Type         | Description |
+| ---------- | ------------ | ----------- |
+| id         | BIGINT       | Primary Key |
+| product_id | BIGINT       | Product ID  |
+| image      | VARCHAR(255) | Image URL   |
+| created_at | TIMESTAMP    | Created     |
 
 Indexes
 
@@ -148,119 +135,66 @@ Indexes
 
 ---
 
-# product_specs
-
-| Column       | Type            | Null | Default        | Description      |
-| ------------ | --------------- | ---- | -------------- | ---------------- |
-| id           | BIGINT UNSIGNED | NO   | AUTO_INCREMENT | Primary Key      |
-| product_id   | BIGINT UNSIGNED | NO   | -              | Product ID       |
-| cpu          | VARCHAR(255)    | YES  | NULL           | CPU              |
-| gpu          | VARCHAR(255)    | YES  | NULL           | GPU              |
-| ram          | VARCHAR(100)    | YES  | NULL           | RAM              |
-| ram_type     | VARCHAR(100)    | YES  | NULL           | DDR Type         |
-| storage      | VARCHAR(100)    | YES  | NULL           | SSD/HDD Capacity |
-| storage_type | VARCHAR(100)    | YES  | NULL           | NVMe/SATA        |
-| screen_size  | VARCHAR(50)     | YES  | NULL           | Screen Size      |
-| resolution   | VARCHAR(100)    | YES  | NULL           | Resolution       |
-| panel        | VARCHAR(100)    | YES  | NULL           | IPS/OLED         |
-| refresh_rate | VARCHAR(50)     | YES  | NULL           | Refresh Rate     |
-| brightness   | VARCHAR(50)     | YES  | NULL           | Brightness       |
-| color_gamut  | VARCHAR(100)    | YES  | NULL           | Color            |
-| camera       | VARCHAR(100)    | YES  | NULL           | Webcam           |
-| battery      | VARCHAR(100)    | YES  | NULL           | Battery          |
-| adapter      | VARCHAR(100)    | YES  | NULL           | Adapter          |
-| weight       | DECIMAL(4,2)    | YES  | NULL           | Weight           |
-| os           | VARCHAR(100)    | YES  | NULL           | Operating System |
-| wifi         | VARCHAR(100)    | YES  | NULL           | WiFi             |
-| bluetooth    | VARCHAR(100)    | YES  | NULL           | Bluetooth        |
-| keyboard     | VARCHAR(255)    | YES  | NULL           | Keyboard         |
-| audio        | VARCHAR(255)    | YES  | NULL           | Audio            |
-| material     | VARCHAR(100)    | YES  | NULL           | Material         |
-| ports        | TEXT            | YES  | NULL           | IO Ports         |
-| created_at   | TIMESTAMP       | YES  | NULL           | Created          |
-| updated_at   | TIMESTAMP       | YES  | NULL           | Updated          |
-
-Indexes
-
-* PK(id)
-* UNIQUE(product_id)
-
----
-
 # carts
 
-| Column     | Type            | Null | Default        | Description |
-| ---------- | --------------- | ---- | -------------- | ----------- |
-| id         | BIGINT UNSIGNED | NO   | AUTO_INCREMENT | Primary Key |
-| user_id    | BIGINT UNSIGNED | NO   | -              | User ID     |
-| created_at | TIMESTAMP       | YES  | NULL           | Created     |
-| updated_at | TIMESTAMP       | YES  | NULL           | Updated     |
+Mỗi dòng đại diện cho một sản phẩm trong giỏ hàng.
+
+| Column     | Type      | Description |
+| ---------- | --------- | ----------- |
+| id         | BIGINT    | Primary Key |
+| user_id    | BIGINT    | User        |
+| product_id | BIGINT    | Product     |
+| quantity   | INT       | Quantity    |
+| created_at | TIMESTAMP | Created     |
 
 Indexes
 
 * PK(id)
-* UNIQUE(user_id)
-
----
-
-# cart_items
-
-| Column     | Type            | Null | Default        | Description |
-| ---------- | --------------- | ---- | -------------- | ----------- |
-| id         | BIGINT UNSIGNED | NO   | AUTO_INCREMENT | Primary Key |
-| cart_id    | BIGINT UNSIGNED | NO   | -              | Cart ID     |
-| product_id | BIGINT UNSIGNED | NO   | -              | Product ID  |
-| quantity   | INT             | NO   | 1              | Quantity    |
-| created_at | TIMESTAMP       | YES  | NULL           | Created     |
-
-Indexes
-
-* PK(id)
-* INDEX(cart_id)
+* INDEX(user_id)
 * INDEX(product_id)
 
 ---
 
 # orders
 
-| Column           | Type            | Null | Default        | Description  |
-| ---------------- | --------------- | ---- | -------------- | ------------ |
-| id               | BIGINT UNSIGNED | NO   | AUTO_INCREMENT | Primary Key  |
-| user_id          | BIGINT UNSIGNED | NO   | -              | User ID      |
-| order_code       | VARCHAR(30)     | NO   | UNIQUE         | Order Code   |
-| receiver_name    | VARCHAR(100)    | NO   | -              | Receiver     |
-| receiver_phone   | VARCHAR(20)     | NO   | -              | Phone        |
-| receiver_email   | VARCHAR(100)    | YES  | NULL           | Email        |
-| receiver_address | VARCHAR(255)    | NO   | -              | Address      |
-| note             | TEXT            | YES  | NULL           | Note         |
-| payment_method   | TINYINT         | NO   | 0              | 0=COD        |
-| payment_status   | TINYINT         | NO   | 0              | Pending      |
-| shipping_fee     | DECIMAL(15,2)   | NO   | 0              | Shipping     |
-| discount         | DECIMAL(15,2)   | NO   | 0              | Discount     |
-| total_price      | DECIMAL(15,2)   | NO   | 0              | Total        |
-| status           | TINYINT         | NO   | 0              | Order Status |
-| created_at       | TIMESTAMP       | YES  | NULL           | Created      |
-| updated_at       | TIMESTAMP       | YES  | NULL           | Updated      |
+| Column           | Type          | Description  |
+| ---------------- | ------------- | ------------ |
+| id               | BIGINT        | Primary Key  |
+| user_id          | BIGINT        | User         |
+| receiver_name    | VARCHAR(100)  | Receiver     |
+| receiver_phone   | VARCHAR(20)   | Phone        |
+| receiver_address | VARCHAR(255)  | Address      |
+| total_price      | DECIMAL(15,2) | Total        |
+| status           | TINYINT       | Order Status |
+| created_at       | TIMESTAMP     | Created      |
+| updated_at       | TIMESTAMP     | Updated      |
+
+Status
+
+* 0 = Pending
+* 1 = Confirmed
+* 2 = Shipping
+* 3 = Completed
+* 4 = Cancelled
 
 Indexes
 
 * PK(id)
-* UNIQUE(order_code)
 * INDEX(user_id)
-* INDEX(status)
 
 ---
 
 # order_items
 
-| Column     | Type            | Null | Default        | Description   |
-| ---------- | --------------- | ---- | -------------- | ------------- |
-| id         | BIGINT UNSIGNED | NO   | AUTO_INCREMENT | Primary Key   |
-| order_id   | BIGINT UNSIGNED | NO   | -              | Order ID      |
-| product_id | BIGINT UNSIGNED | NO   | -              | Product ID    |
-| price      | DECIMAL(15,2)   | NO   | 0              | Product Price |
-| quantity   | INT             | NO   | 1              | Quantity      |
-| subtotal   | DECIMAL(15,2)   | NO   | 0              | Subtotal      |
+Lưu snapshot của sản phẩm tại thời điểm đặt hàng.
+
+| Column     | Type          | Description   |
+| ---------- | ------------- | ------------- |
+| id         | BIGINT        | Primary Key   |
+| order_id   | BIGINT        | Order ID      |
+| product_id | BIGINT        | Product ID    |
+| price      | DECIMAL(15,2) | Product Price |
+| quantity   | INT           | Quantity      |
 
 Indexes
 
@@ -274,26 +208,69 @@ Indexes
 
 ```
 users
-    └── orders
-    └── carts
-
-brands
-    └── products
+ ├── carts
+ └── orders
+       └── order_items
 
 categories
-    └── products
-
-products
-    ├── product_images
-    ├── product_specs
-    ├── cart_items
-    └── order_items
-
-carts
-    └── cart_items
-
-orders
-    └── order_items
+      └── products
+              └── product_images
 ```
 
-> **Note:** Dự án không sử dụng Foreign Key Constraint trong database. Quan hệ giữa các bảng được đảm bảo bởi tầng ứng dụng (Laravel Service/Repository) nhằm giảm phụ thuộc, tăng hiệu năng migration và thuận tiện cho việc import/export dữ liệu.
+---
+
+# Future Expansion
+
+## Phase 2
+
+* brands
+* brand_id
+
+---
+
+## Phase 3
+
+Tách toàn bộ thông số kỹ thuật sang
+
+```
+product_specs
+```
+
+---
+
+## Phase 4
+
+Thêm
+
+```
+reviews
+wishlists
+coupons
+payments
+addresses
+```
+
+---
+
+## Phase 5
+
+Thêm
+
+```
+product_variants
+colors
+ram_options
+storage_options
+inventory
+warehouse
+activity_logs
+```
+
+---
+
+# Notes
+
+* Không sử dụng Foreign Key Constraint.
+* Quan hệ giữa các bảng được xử lý bởi Laravel (Eloquent ORM).
+* Thiết kế ưu tiên đơn giản để học và phát triển nhanh.
+* Sau khi hoàn thành MVP mới tiếp tục chuẩn hóa database ở các phase tiếp theo.
