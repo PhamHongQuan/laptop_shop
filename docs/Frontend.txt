@@ -1,0 +1,692 @@
+# Frontend Architecture Guideline
+
+## Laravel 12 + Blade + TailwindCSS + Vite
+
+Version: 1.0
+
+---
+
+# 1. Mục tiêu
+
+Kiến trúc Frontend phải đảm bảo:
+
+* Dễ đọc
+* Dễ mở rộng
+* Tái sử dụng Component
+* Không lặp code
+* Chuẩn MVC của Laravel
+* Dễ chuyển sang React/Vue nếu sau này cần
+
+Không viết HTML dài hàng nghìn dòng trong một file.
+
+Mỗi file chỉ nên đảm nhiệm một nhiệm vụ.
+
+---
+
+# 2. Thư mục
+
+```
+resources
+│
+├── css
+│     app.css
+│
+├── js
+│     app.js
+│
+└── views
+      │
+      ├── layouts
+      │      app.blade.php
+      │
+      ├── pages
+      │      home.blade.php
+      │
+      │      product
+      │            index.blade.php
+      │            show.blade.php
+      │
+      │      cart
+      │            index.blade.php
+      │
+      │      checkout
+      │            index.blade.php
+      │
+      └── components
+             │
+             ├── layout
+             │      navbar.blade.php
+             │      footer.blade.php
+             │      sidebar.blade.php
+             │
+             ├── home
+             │      hero.blade.php
+             │      categories.blade.php
+             │      featured-products.blade.php
+             │      banner.blade.php
+             │      latest-products.blade.php
+             │      newsletter.blade.php
+             │
+             ├── product
+             │      card.blade.php
+             │      gallery.blade.php
+             │      information.blade.php
+             │      specification.blade.php
+             │      review.blade.php
+             │
+             ├── cart
+             │      cart-item.blade.php
+             │
+             ├── checkout
+             │      address-form.blade.php
+             │      payment-method.blade.php
+             │
+             ├── ui
+             │      button.blade.php
+             │      input.blade.php
+             │      badge.blade.php
+             │      modal.blade.php
+             │      pagination.blade.php
+             │      alert.blade.php
+             │      loading.blade.php
+             │      skeleton.blade.php
+             │
+             └── common
+                    empty-state.blade.php
+                    error.blade.php
+```
+
+---
+
+# 3. Ý nghĩa từng thư mục
+
+## layouts
+
+Chứa khung chung của website.
+
+Ví dụ
+
+* Head
+* Font
+* Vite
+* Navbar
+* Footer
+
+Không chứa nội dung của từng trang.
+
+---
+
+## pages
+
+Mỗi file tương ứng một Route.
+
+Ví dụ
+
+```
+/
+```
+
+↓
+
+```
+pages/home.blade.php
+```
+
+```
+/products
+```
+
+↓
+
+```
+pages/product/index.blade.php
+```
+
+```
+/products/macbook-air
+```
+
+↓
+
+```
+pages/product/show.blade.php
+```
+
+Page chỉ có nhiệm vụ ghép các Component.
+
+Không nên chứa HTML phức tạp.
+
+---
+
+## components
+
+Là nơi chứa toàn bộ UI.
+
+Component có thể tái sử dụng.
+
+Ví dụ
+
+Product Card
+
+sẽ được dùng ở
+
+* Homepage
+* Search
+* Wishlist
+* Related Product
+* Category
+
+Chỉ viết một lần.
+
+---
+
+## ui
+
+Chứa Component nhỏ.
+
+Ví dụ
+
+Button
+
+Input
+
+Badge
+
+Modal
+
+Loading
+
+Pagination
+
+Toast
+
+Skeleton
+
+Những Component này không liên quan tới nghiệp vụ.
+
+Có thể dùng ở mọi nơi.
+
+---
+
+## common
+
+Những Component dùng chung.
+
+Ví dụ
+
+404
+
+Loading
+
+Empty Result
+
+Error Message
+
+---
+
+# 4. Layout
+
+app.blade.php chỉ nên có
+
+```
+<html>
+
+<head>
+
+</head>
+
+<body>
+
+Navbar
+
+Main
+
+Footer
+
+</body>
+
+</html>
+```
+
+Không nên chứa Hero
+
+Không nên chứa Product
+
+Không nên chứa Banner
+
+---
+
+# 5. Page
+
+Ví dụ Home
+
+```
+Home Page
+
+↓
+
+Hero
+
+↓
+
+Categories
+
+↓
+
+Featured Products
+
+↓
+
+Banner
+
+↓
+
+Latest Products
+
+↓
+
+Newsletter
+```
+
+Tương ứng
+
+```
+<x-home.hero/>
+
+<x-home.categories/>
+
+<x-home.featured-products/>
+
+<x-home.banner/>
+
+<x-home.latest-products/>
+
+<x-home.newsletter/>
+```
+
+Page chỉ đóng vai trò ghép các Component.
+
+---
+
+# 6. Product Card
+
+Không viết nhiều bản.
+
+Sai
+
+```
+home-product-card
+
+wishlist-product-card
+
+search-product-card
+
+related-product-card
+```
+
+Đúng
+
+```
+product/card.blade.php
+```
+
+Dùng ở mọi nơi.
+
+---
+
+# 7. Component Size
+
+Một Component nên dưới khoảng
+
+200 dòng.
+
+Nếu vượt
+
+300 dòng
+
+nên tách nhỏ.
+
+Ví dụ
+
+```
+Product Detail
+
+↓
+
+Gallery
+
+↓
+
+Information
+
+↓
+
+Specification
+
+↓
+
+Review
+
+↓
+
+Related Product
+```
+
+---
+
+# 8. Controller
+
+Controller chuẩn bị dữ liệu.
+
+Ví dụ
+
+```
+HomeController
+```
+
+```
+return view(...)
+```
+
+với
+
+```
+featuredProducts
+
+latestProducts
+
+categories
+```
+
+View không Query Database.
+
+View chỉ hiển thị.
+
+---
+
+# 9. Blade Component
+
+Ưu tiên
+
+```
+<x-product.card />
+```
+
+thay vì
+
+```
+@include(...)
+```
+
+Lý do
+
+* Có Props
+* Đẹp hơn
+* Dễ bảo trì
+* Gần giống React Component
+
+Ví dụ
+
+```
+<x-product.card
+    :product="$product"
+/>
+```
+
+---
+
+# 10. Quy tắc đặt tên
+
+Tên file
+
+```
+hero.blade.php
+
+featured-products.blade.php
+
+latest-products.blade.php
+```
+
+Không dùng
+
+```
+Hero.blade.php
+
+HeroComponent.blade.php
+```
+
+Tên thư mục
+
+chữ thường
+
+dùng dấu -
+
+---
+
+# 11. CSS
+
+Không viết CSS riêng cho từng Component nếu Tailwind làm được.
+
+Ưu tiên
+
+```
+Tailwind Utility
+
+↓
+
+Tailwind Component
+
+↓
+
+CSS
+```
+
+---
+
+# 12. Font
+
+Inter
+
+```
+font-family: Inter;
+```
+
+---
+
+# 13. Khoảng trắng
+
+Section
+
+```
+py-24
+```
+
+Container
+
+```
+max-w-7xl
+mx-auto
+px-6
+```
+
+Card
+
+```
+p-6
+```
+
+---
+
+# 14. Border Radius
+
+Ưu tiên
+
+```
+rounded-lg
+
+rounded-xl
+```
+
+Không lạm dụng
+
+```
+rounded-3xl
+
+rounded-full
+```
+
+---
+
+# 15. Shadow
+
+Chỉ dùng
+
+```
+shadow-sm
+
+hover:shadow-lg
+```
+
+Không dùng Shadow quá nặng.
+
+---
+
+# 16. Animation
+
+Chỉ cần
+
+```
+transition-all
+
+duration-300
+```
+
+Hover
+
+```
+hover:-translate-y-1
+```
+
+Không dùng Animation quá nhiều.
+
+---
+
+# 17. Responsive
+
+Breakpoint
+
+```
+sm
+
+md
+
+lg
+
+xl
+
+2xl
+```
+
+Desktop First
+
+Mobile Friendly
+
+---
+
+# 18. Quy tắc Component
+
+Một Component chỉ có một nhiệm vụ.
+
+Ví dụ
+
+Hero
+
+↓
+
+Hiển thị Banner
+
+Không xử lý
+
+Cart
+
+Không Query
+
+Không Validate
+
+---
+
+# 19. Khi nào tạo Component mới?
+
+Nếu UI xuất hiện từ 2 lần trở lên.
+
+Ví dụ
+
+Button
+
+Product Card
+
+Rating
+
+Pagination
+
+Badge
+
+=> tạo Component.
+
+---
+
+# 20. Luồng hoạt động
+
+```
+Route
+
+↓
+
+Controller
+
+↓
+
+Model
+
+↓
+
+View
+
+↓
+
+Blade Component
+
+↓
+
+HTML
+
+↓
+
+TailwindCSS
+
+↓
+
+Browser
+```
+
+---
+
+# 21. Mục tiêu cuối cùng
+
+Dự án phải đạt các tiêu chí:
+
+✔ Dễ đọc
+
+✔ Dễ bảo trì
+
+✔ Không lặp code
+
+✔ Component tái sử dụng
+
+✔ Chuẩn MVC
+
+✔ Chuẩn Laravel
+
+✔ Dễ mở rộng
+
+✔ Dễ chuyển sang React sau này
