@@ -113,3 +113,75 @@ API Resource
 ↓
 
 Response
+
+
+// ========================================== Frontend ==========================================  
+resources
+├── js
+│   ├── app.js
+│   │
+│   ├── bootstrap.js
+│   │
+│   ├── api
+│   │     ├── axios.js          // cấu hình axios
+│   │     ├── auth.api.js
+│   │     ├── product.api.js
+│   │     ├── cart.api.js
+│   │     └── order.api.js
+│   │
+│   ├── pages
+│   │     ├── register.js
+│   │     ├── login.js
+│   │     ├── home.js
+│   │     └── cart.js
+│   │
+│   ├── utils
+│   │     ├── toast.js
+│   │     ├── validator.js
+│   │     ├── loading.js
+│   │     └── helper.js
+│   │
+│   └── components
+│         ├── navbar.js
+│         └── search.js
+│
+resources/views
+│
+├── layouts
+├── partials
+├── auth
+│     ├── login.blade.php
+│     └── register.blade.php
+│
+└── home.blade.php
+
+
+
+// ========================================== Backend ==========================================
+app
+│
+├── Http
+│     ├── Controllers
+│     │      ├── Auth
+│     │      │      RegisterController.php
+│     │      │      LoginController.php
+│     │      │
+│     │      ├── ProductController.php
+│     │      └── CartController.php
+│     │
+│     ├── Requests
+│     │      RegisterRequest.php
+│     │      LoginRequest.php
+│     │
+│     └── Resources
+│            UserResource.php
+│            ProductResource.php
+│
+├── Services
+│      AuthService.php
+│      CartService.php
+│      ProductService.php
+│
+└── Repositories
+       UserRepository.php
+       ProductRepository.php

@@ -1,5 +1,21 @@
 services:
 
+  node:
+    image: node:22
+
+    container_name: laptop-node
+
+    working_dir: /var/www/html
+
+    volumes:
+      - ./src:/var/www/html
+
+    ports:
+      - "5173:5173"
+
+    command: tail -f /dev/null
+    
+
   nginx:
     image: nginx:latest
     container_name: laptop-nginx
